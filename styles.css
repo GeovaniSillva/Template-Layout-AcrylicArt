@@ -88,7 +88,14 @@ body.capturing .no-print{display:none!important}
 .drop b{font-family:var(--head);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3A3A44}
 .drop small{font-size:11px;color:#55555f}
 .plate.dark .drop b{color:var(--txt-2)} .plate.dark .drop small{color:var(--txt-3)}
-.info{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:hidden}
+.info{display:flex;flex-direction:column;gap:10px;min-width:0;min-height:0}
+.info>*{min-height:0}
+/* com o modo Kit ligado a coluna ganha três grupos de medidas: aperta as linhas
+   em vez de cortar o valor no rodapé */
+.piece.kit .row{padding:3px 0}
+.piece.kit .group-head{padding-top:3px}
+.piece.kit .desc{min-height:0;font-size:12px;line-height:1.45}
+.piece.kit .tools{gap:3px}
 .tools{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 .tools input[type=range]{width:84px;margin-left:auto}
 .group-head{display:flex;align-items:center;gap:8px;padding-top:6px}
@@ -102,7 +109,12 @@ body.capturing .no-print{display:none!important}
 .n2 .desc,.n4 .desc{font-size:11.5px;min-height:0}
 .preco{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:8px}
 .preco i{width:3px;align-self:stretch;background:var(--magenta);border-radius:2px}
-.preco b{font-family:var(--head);font-size:18px;font-weight:700;white-space:nowrap}
+.preco b{font-family:var(--head);font-size:18px;font-weight:700;white-space:nowrap;min-width:2ch}
+.preco .fix{font-family:var(--head);font-size:14px;font-weight:700;color:var(--txt-2);white-space:nowrap}
+.preco b+.fix{margin-left:-2px}
+.prazo-line{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.prazo-line .prazo{min-width:1.6ch}
+.prazo-line .fix{font-size:13px;font-weight:600;color:var(--txt-2)}
 .n2 .preco b,.n4 .preco b{font-size:14px}
 .hidden{display:none!important}
 

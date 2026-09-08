@@ -11,6 +11,16 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   };
+  // 7000 -> "70,00" (o usuário digita centavos, a vírgula entra sozinha)
+  var moeda = function (digits) {
+    var d = String(digits || '').replace(/\D/g, '').replace(/^0+(?=\d{3})/, '');
+    if (!d) return '';
+    while (d.length < 3) d = '0' + d;
+    var int = d.slice(0, -2), cents = d.slice(-2);
+    int = int.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return int + ',' + cents;
+  };
+  var soDigitos = function (v) { return String(v == null ? '' : v).replace(/\D/g, ''); };
   var ph = function (v) { return (v && String(v).trim()) ? '0' : '1'; };
   var pair = function () {
     return [
@@ -43,10 +53,11 @@
     };
     S.pieces.forEach(function (p) {
       p.nome = p.nome || ''; p.desc = p.desc || ''; p.valor = p.valor || '';
-      p.valorOn = !!p.valorOn; p.kit = !!p.kit;
+      p.valor = soDigitos(p.valor); p.valorOn = !!p.valorOn; p.kit = !!p.kit;
       p.medidas = p.medidas || []; p.medidasB = p.medidasB || pair(); p.medidasC = p.medidasC || pair();
       p.cotas = p.cotas || []; p.zoom = p.zoom || 1; p.ox = p.ox || 0; p.oy = p.oy || 0;
     });
+    S.prazo = soDigitos(S.prazo).slice(0, 3);
     active = S.pieces[0] && S.pieces[0].id;
   }
   function save() {
@@ -112,7 +123,7 @@
     var img = p.imgSrc
       ? '<img alt="" draggable="false" data-act="img-move" style="transform:translate(' + p.ox + 'px,' + p.oy + 'px) scale(' + p.zoom + ')">'
       : '';
-    return '<div class="piece" data-piece="' + p.id + '">' +
+    return '<div class="piece' + (p.kit ? ' kit' : '') + '" data-piece="' + p.id + '">' +
       '<div class="piece-head">' +
         '<span class="piece-title">' +
           '<b contenteditable="true" data-ph="TROFÉU – NOME DO EVENTO" data-empty="' + ph(p.nome) + '" data-field="nome">' + esc(p.nome) + '</b>' +
@@ -146,7 +157,9 @@
             '<div class="desc" contenteditable="true" data-ph="Material, acabamento, gravação, cores…" data-empty="' + ph(p.desc) + '" data-field="desc">' + esc(p.desc) + '</div>' +
           '</div>' +
           '<div class="preco' + (p.valorOn ? '' : ' hidden') + '"><i></i><span class="kicker">Valor</span>' +
-            '<b contenteditable="true" data-ph="R$ 000,00 / unid." data-empty="' + ph(p.valor) + '" data-field="valorTxt">' + esc(p.valor) + '</b>' +
+            '<span class="fix">R$</span>' +
+            '<b contenteditable="true" inputmode="numeric" data-ph="0,00" data-empty="' + ph(p.valor) + '" data-field="valorTxt">' + esc(moeda(p.valor)) + '</b>' +
+            '<span class="fix">' + (p.kit ? 'p/ kit' : 'p/ unidade') + '</span>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -169,7 +182,8 @@
       '<div class="rule"></div>' +
       '<div class="foot">' +
         '<div class="field" style="text-align:left"><span class="kicker">Prazo de produção</span>' +
-          '<span class="prazo" contenteditable="true" data-ph="00 dias úteis após aprovação" data-empty="' + ph(S.prazo) + '" data-doc="prazo">' + esc(S.prazo) + '</span></div>' +
+          '<span class="prazo-line"><span class="prazo" contenteditable="true" inputmode="numeric" data-ph="00" data-empty="' + ph(S.prazo) + '" data-doc="prazo">' + esc(S.prazo) + '</span>' +
+          '<span class="fix">dias úteis após aprovação do layout.</span></span></div>' +
         '<div class="contato" contenteditable="true" data-ph="Telefone · Instagram" data-empty="' + ph(S.contato) + '" data-doc="contato">' + esc(S.contato) + '</div>' +
       '</div>' +
     '</div>';
@@ -250,7 +264,7 @@
     return 'Layout AcrylicArt' + (n ? ' - ' + n : '');
   }
   function exportPdf() {
-    if (window.confirm('Gerar o PDF pela impressão do navegador.\n\nNa janela que abrir escolha:\n• Destino: "Salvar como PDF"\n• Margens: "Nenhuma"\n• Escala: "Padrão"\n• Marque "Gráficos de fundo"')) {
+    if (window.confirm('Gerar o PDF pela impressão do navegador.\n\nNa janela que abrir, confira:\n\n1) Destino: "Salvar como PDF" (NÃO use "Microsoft Print to PDF" — essa opção força página em pé)\n2) Em "Mais definições": Margens "Nenhuma", Escala "Padrão"\n3) Marque "Gráficos de segundo plano"\n\nA orientação paisagem é automática.')) {
       setTimeout(function () { window.print(); }, 60);
     }
   }
@@ -295,10 +309,30 @@
   }
 
   /* ---------- eventos ---------- */
+  function caretEnd(el) {
+    var r = document.createRange(), s = window.getSelection();
+    r.selectNodeContents(el); r.collapse(false);
+    s.removeAllRanges(); s.addRange(r);
+  }
   function editable(e) {
     var el = e.target;
     if (!el.isContentEditable) return;
     var v = el.textContent;
+
+    if (el.dataset.doc === 'prazo') {
+      var dias = soDigitos(v).slice(0, 3);
+      if (v !== dias) { el.textContent = dias; caretEnd(el); }
+      el.dataset.empty = dias ? '0' : '1';
+      snapshot(true); S.prazo = dias; save(); return;
+    }
+    if (el.dataset.field === 'valorTxt') {
+      var pv = piece(el.closest('.piece').dataset.piece);
+      var dig = soDigitos(v).slice(0, 11);
+      var txt = moeda(dig);
+      if (v !== txt) { el.textContent = txt; caretEnd(el); }
+      el.dataset.empty = dig ? '0' : '1';
+      snapshot(true); pv.valor = dig; save(); return;
+    }
     el.dataset.empty = (v && v.trim()) ? '0' : '1';
     snapshot(true);
     if (el.dataset.doc) { S[el.dataset.doc] = v; save(); return; }

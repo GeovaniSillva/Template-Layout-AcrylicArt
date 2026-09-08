@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AcrylicArt — Layout para aprovação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="nav no-print">
+  <div class="nav-brand">Layout p/ <span>aprovação</span></div>
+  <button class="btn solid" data-act="add-piece">+ Peça</button>
+  <button class="btn ghost" data-act="undo" title="Desfazer (Ctrl+Z)">↺ Desfazer</button>
+  <div class="seg">
+    <span>Peças por página</span>
+    <button data-act="per-page" data-n="1">1</button>
+    <button data-act="per-page" data-n="2">2</button>
+    <button data-act="per-page" data-n="4">4</button>
+  </div>
+  <button class="btn ghost" data-act="plate"></button>
+  <div class="spacer"></div>
+  <button class="btn ghost" data-act="reset">Limpar tudo</button>
+  <button class="btn ghost" data-act="png">Exportar em PNG</button>
+  <button class="btn" data-act="pdf">Exportar PDF pronto</button>
+</div>
+
+<div class="sheet-wrap" id="sheets"></div>
+
+<p class="tip no-print">
+  Arraste o PNG do Corel na área da peça (ou Ctrl+V). Clique numa cota para mover, girar o lado do número e remover.
+  O preenchimento fica salvo neste navegador.
+</p>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -154,14 +154,6 @@ body.capturing .no-print{display:none!important}
   .sheet:last-child{break-after:auto!important}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-/* Se o diálogo de impressão estiver fixado em "Retrato", a folha é girada
-   para caber inteira na página em pé — o resultado continua paisagem. */
-@media print and (orientation: portrait){
-  .sheet-wrap{width:210mm!important;overflow:hidden!important}
-  .sheet{transform:translate(210mm,0) rotate(90deg);transform-origin:0 0;
-    margin:0 0 87mm!important}
-}
-
 /* ---------- celular e telas estreitas ----------
    A folha deixa de ser A4 na tela e passa a reflowar em coluna única.
    A exportação não muda: o bloco @media print acima força 297x210mm. */

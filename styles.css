@@ -144,58 +144,12 @@ body.capturing .no-print{display:none!important}
 .foot .contato{font-size:12px;color:var(--txt-2);text-align:right}
 .tip{text-align:center;font-size:12px;color:var(--txt-3);padding:26px 16px 60px}
 
-@page{size:297mm 210mm;margin:0}
+@page{size:A4 landscape;margin:0}
 @media print{
   html,body{margin:0!important;padding:0!important;background:#fff;width:auto!important;height:auto!important;overflow:visible!important}
   .no-print{display:none!important}
   .sheet-wrap{display:block!important;padding:0!important;margin:0!important;gap:0!important;width:auto!important;min-width:0!important}
-  .sheet{width:297mm!important;height:210mm!important;margin:0!important;box-shadow:none!important;border-radius:0!important;
-    break-inside:avoid;break-after:page;overflow:hidden!important}
+  .sheet{width:297mm!important;height:210mm!important;margin:0!important;box-shadow:none!important;break-inside:avoid;break-after:page}
   .sheet:last-child{break-after:auto!important}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
-/* Se o diálogo de impressão estiver fixado em "Retrato", a folha é girada
-   para caber inteira na página em pé — o resultado continua paisagem. */
-@media print and (orientation: portrait){
-  .sheet-wrap{width:210mm!important;overflow:hidden!important}
-  .sheet{transform:translate(210mm,0) rotate(90deg);transform-origin:0 0;
-    margin:0 0 87mm!important}
-}
-
-/* ---------- celular e telas estreitas ----------
-   A folha deixa de ser A4 na tela e passa a reflowar em coluna única.
-   A exportação não muda: o bloco @media print acima força 297x210mm. */
-@media screen and (max-width: 900px) {
-  body { font-size: 15px; }
-  .nav { padding: 8px 10px; gap: 6px; }
-  .nav-brand { font-size: 11px; width: 100%; margin: 0 0 2px; }
-  .nav .btn { padding: 9px 12px; font-size: 11px; }
-  .nav .spacer { display: none; }
-  .seg span { display: none; }
-  .sheet-wrap { width: auto; min-width: 0; padding: 12px 10px 0; gap: 14px; }
-  .sheet { width: 100%; height: auto; min-height: 0; padding: 18px 16px 20px; }
-  .head { flex-wrap: wrap; gap: 12px; }
-  .head-meta { width: 100%; justify-content: space-between; gap: 12px; }
-  .cliente { font-size: 18px; }
-  .grid, .grid.n1, .grid.n2, .grid.n4 { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; gap: 22px; padding: 14px 0; }
-  .piece-body, .n1 .piece-body, .n2 .piece-body, .n4 .piece-body {
-    grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; gap: 12px;
-  }
-  .plate { height: auto; aspect-ratio: 4 / 3; }
-  .info { overflow: visible; }
-  .piece-title b, .n2 .piece-title b, .n4 .piece-title b { font-size: 16px; }
-  .row, .n2 .row, .n4 .row { font-size: 13px; padding: 6px 0; }
-  .desc, .n2 .desc, .n4 .desc { font-size: 13px; min-height: 0; }
-  .preco b, .n2 .preco b, .n4 .preco b { font-size: 16px; }
-  .tools { gap: 6px; }
-  .mini { padding: 7px 10px; font-size: 10px; }
-  .tools input[type=range] { width: 100%; margin: 4px 0 0; }
-  .icon { width: 28px; height: 28px; }
-  .cota .grip { width: 14px; height: 14px; }
-  .cota.v .grip { left: -7px; bottom: -7px; }
-  .cota.h .grip { right: -7px; top: -7px; }
-  .cota .ctrl button { width: 24px; height: 24px; font-size: 11px; }
-  .foot { flex-wrap: wrap; gap: 12px; }
-  .foot .contato { text-align: left; }
-  .tip { padding: 18px 14px 40px; }
 }
